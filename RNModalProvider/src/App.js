@@ -10,6 +10,7 @@ import { MenuItem, MenuDivider } from 'react-native-material-menu';
 
 import ModalProvider, { withModal } from './components/ModalProvider';
 import MaterialMenuModal from './components/MaterialMenuModal';
+import ConnectedMaterialMenuModal from './components/ConnectedMaterialMenuModal';
 
 const styles = StyleSheet
   .create(
@@ -21,41 +22,6 @@ const styles = StyleSheet
       },
     },
   );
-
-// XXX: This is the implementation of the contents of the Modal.
-const ConnectedMaterialModal = withModal(
-  // XXX: What to render when the Modal is open.
-  ({ children, ...extraProps }) => {
-    return (
-      <React.Fragment
-      >
-        {children}
-      </React.Fragment>
-    );
-  },
-  // What to render in the Modal's place whilst it isn't open.
-  // Note that you can do things dynamically.
-  // Here we perform some steps to aid correct rendering of
-  // the material-menu when opened in the shared absolute layout.
-  ({ layout, visible, button: ButtonComponent }) => {
-    if (!visible) {
-      return (
-        <ButtonComponent
-        />
-      );
-    }
-    const { width, height } = layout;
-    return (
-      <View
-        style={{
-          width,
-          height,
-        }}
-      />
-    );
-  },
-);
-
 
 class App extends React.Component {
   state = {
@@ -104,7 +70,7 @@ class App extends React.Component {
           <View
             style={styles.tutorial}
           >
-            <ConnectedMaterialModal
+            <ConnectedMaterialMenuModal
               visible={showMenuOne}
               button={
                 ({ ...extraProps }) => {
@@ -133,8 +99,8 @@ class App extends React.Component {
                   showMenuOne: false,
                 })}
               />
-            </ConnectedMaterialModal>
-            <ConnectedMaterialModal
+            </ConnectedMaterialMenuModal>
+            <ConnectedMaterialMenuModal
               visible={showMenuTwo}
               button={
                 ({ layout, ...extraProps }) => {
@@ -158,7 +124,7 @@ class App extends React.Component {
                 })}
                 children="Close"
               />
-            </ConnectedMaterialModal>
+            </ConnectedMaterialMenuModal>
           </View>
           <Markdown
           >
