@@ -1,1 +1,4 @@
-export { default as ModalProvider } from './RNModalProvider/src/components/ModalProvider';
+export {
+  default as ModalProvider,
+  withModal,
+} from './RNModalProvider/src/components/ModalProvider';
