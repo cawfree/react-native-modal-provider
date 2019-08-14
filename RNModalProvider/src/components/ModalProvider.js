@@ -190,12 +190,7 @@ class ModalProvider extends React.Component {
         {((Platform.OS !== 'web') || visible) && (
           <View
             style={{
-              ...(
-                (position === 'relative' && visible) ? ({
-                  marginLeft: layout.x,
-                  marginTop: layout.y,
-                }) : {}
-              )
+              ...position(layout), 
             }}
           >
             <ModalComponent
@@ -215,17 +210,12 @@ class ModalProvider extends React.Component {
 
 ModalProvider.propTypes = {
   ModalComponent: PropTypes.func,
-  position: PropTypes.oneOf(
-    [
-      'absolute',
-      'relative',
-    ],
-  ),
+  position: PropTypes.func,
 };
 
 ModalProvider.defaultProps = {
   ModalComponent: Modal,
-  position: 'absolute',
+  position: layout => ({}),
 };
 
 Object.assign(
