@@ -19,7 +19,9 @@ const styles = StyleSheet
     },
   );
 
+// XXX: This is the implementation of the contents of the Modal.
 const ConnectedMaterialModal = withModal(
+  // XXX: What to render when the Modal is open.
   ({ children, ...extraProps }) => {
     return (
       <React.Fragment
@@ -28,6 +30,8 @@ const ConnectedMaterialModal = withModal(
       </React.Fragment>
     );
   },
+  // What to render in the Modal's place whilst it isn't open.
+  // Note that you can do things dynamically.
   ({ visible, button: ButtonComponent }) => {
     if (!visible) {
       return (
@@ -45,7 +49,7 @@ const ConnectedMaterialModal = withModal(
 
 class App extends React.Component {
   state = {
-    visible: false,
+    visible: true,
   };
   render() {
     const { visible } = this.state;
@@ -83,7 +87,13 @@ class App extends React.Component {
               }
             }
           >
-            <MenuItem>{'Welcome 2!'}</MenuItem>
+            <MenuItem
+              onPress={() => this.setState({
+                visible: false,
+              })}
+            >
+              {'Welcome 2!'}
+            </MenuItem>
           </ConnectedMaterialModal>
         </View>
       </ModalProvider>

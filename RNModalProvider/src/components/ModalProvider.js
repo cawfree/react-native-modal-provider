@@ -29,56 +29,67 @@ export const withModal = (
       },
     );
   }
-  async componentDidMount() {
-    const {
-      visible,
-      children,
-      ...extraProps
-    } = this.props;
-    if (visible) {
-      // TODO: Need to assure this works. (i.e. what if layout is called after mount?)
-      const {
-        uuid,
-        layout,
-      } = this.state;
-      const { requestOpen } = this.context;
-      return requestOpen(
-        uuid,
-        layout,
-        { ...extraProps },
-        () => (
-          <ModalContent
-          >
-            {children}
-          </ModalContent>
-        ),
-      );
-    }
-    return Promise
-      .resolve();
-  }
+  //async componentDidMount() {
+  //  const {
+  //    visible,
+  //    children,
+  //    ...extraProps
+  //  } = this.props;
+  //  if (visible) {
+  //    // TODO: Need to assure this works. (i.e. what if layout is called after mount?)
+  //    const {
+  //      uuid,
+  //      layout,
+  //    } = this.state;
+  //    const { requestOpen } = this.context;
+  //    return requestOpen(
+  //      uuid,
+  //      layout,
+  //      { ...extraProps },
+  //      () => (
+  //        <ModalContent
+  //        >
+  //          {children}
+  //        </ModalContent>
+  //      ),
+  //    );
+  //  }
+  //  return Promise
+  //    .resolve();
+  //}
   async componentWillUpdate(nextProps, nextState) {
     const {
       visible,
       children,
       ...extraProps
     } = nextProps;
-    const { uuid, layout  } = nextState;
-    const { requestOpen } = this.context;
-    if (visible && !this.props.visible) {
-      return requestOpen(
-        uuid,
-        layout,
-        { ...extraProps },
-        () => (
-          <ModalContent
-          >
-            {children}
-          </ModalContent>
-        ),
-      );
+    const {
+      uuid,
+      layout,
+    } = nextState;
+    const {
+      requestOpen,
+      requestDismiss,
+    } = this.context;
+    const shouldRequestOpen = () => requestOpen(
+      uuid,
+      layout,
+      { ...extraProps },
+      () => (
+        <ModalContent
+        >
+          {children}
+        </ModalContent>
+      ),
+    );
+    if (visible && ((!!layout) && !this.state.layout)) {
+      return shouldRequestOpen();
+    } else if (visible && !this.props.visible) {
+      return shouldRequestOpen();
     } else if (!visible && this.props.visible) {
-
+      return requestDismiss(
+        uuid,
+      );
     }
   }
   render() {
@@ -110,6 +121,7 @@ class ModalProvider extends React.Component {
   constructor(props) {
     super(props);
     this.__requestOpen = this.__requestOpen.bind(this);
+    this.__requestDismiss = this.__requestDismiss.bind(this);
     this.state = {
       visible: false,
       q: [],
@@ -160,6 +172,49 @@ class ModalProvider extends React.Component {
           .resolve();
       });
   }
+  __requestDismiss(uuid) {
+    return new Promise(
+      resolve => this.requestAnimationFrame(
+        () => this.setState(
+          {
+            visible: (this.state.q[0] === uuid) ? false : this.state.visible,
+            q: this.state.q
+              .filter(e => e !== uuid),
+            l: {
+              ...this.state.l,
+              [uuid]: undefined,
+            },
+            p: {
+              ...this.state.p,
+              [uuid]: undefined,
+            },
+            c: {
+              ...this.state.c,
+              [uuid]: undefined,
+            },
+          },
+          resolve,
+        ),
+      ),
+    )
+      .then(() => {
+        const { q } = this.state;
+        if (q.length > 0) {
+          return new Promise(
+            resolve => this.requestAnimationFrame(
+              () => this.setState(
+                {
+                  visible: true,
+                },
+                resolve,
+              ),
+            ),
+          );
+        }
+        return Promise
+          .resolve();
+      });
+  }
   render() {
     const {
       ModalComponent,
@@ -183,6 +238,7 @@ class ModalProvider extends React.Component {
         value={{
           ModalComponent,
           requestOpen: this.__requestOpen,
+          requestDismiss: this.__requestDismiss,
           uuid,
         }}
       >
