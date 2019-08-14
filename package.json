@@ -1,0 +1,14 @@
+{
+  "name": "@cawfree/react-native-modal-provider",
+  "version": "1.0.0",
+  "description": "A React <Provider /> for managing <Modal />s.",
+  "main": "index.js",
+  "repository": "https://github.com/cawfree/react-native-modal-provider",
+  "author": "Alex Thomas (@cawfree) <hello@cawfree.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "react-timer-mixin": "^0.13.4",
+    "uuid": "^3.3.2"
+  }
+}
