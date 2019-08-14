@@ -1,6 +1,10 @@
 # @cawfree/react-native-modal-provider
 A React &lt;Provider /> for managing &lt;Modal />s.
 
+<p align="center">
+  <img src="./bin/out.gif" width="540" height="316">
+</p>
+
 ## Contributing
 [Pull requests](https://github.com/cawfree/react-native-modal-provider/pulls) and [Issues](https://github.com/cawfree/react-native-modal-provider/issues) are more than welcome! Feel free to branch directly from `/master`.
 
