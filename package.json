@@ -1,6 +1,14 @@
 {
   "name": "@cawfree/react-native-modal-provider",
   "version": "1.0.0",
+  "tags": [
+    "react-native",
+    "modal",
+    "react-native-web",
+    "react-native-web-modal",
+    "provider",
+    "controller"
+  ],
   "description": "A React <Provider /> for managing <Modal />s.",
   "main": "index.js",
   "repository": "https://github.com/cawfree/react-native-modal-provider",
