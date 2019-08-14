@@ -72,7 +72,7 @@ Then use your browser to navigate into your [local instance](localhost:3000).
 ## 🧰 Rolling Your Own
 To define your own `ModalComponent` to render using the `ModalProvider`, all it expects is the `ModalComponent` accepts a `visible` prop, which is used to define whether the `Modal` is presented or not. There is a working example of how to do this in the [example directory](./RNModalProvider/).
 
-There's an existing template based on using [react-native-material-menu](https://github.com/mxck/react-native-material-menu).
+There's an existing template based on using [react-native-material-menu](https://github.com/mxck/react-native-material-menu) as the `ModalComponent`.
 
 ## ✌️ License
 [MIT](https://opensource.org/licenses/MIT)
