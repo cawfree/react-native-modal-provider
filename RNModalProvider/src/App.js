@@ -90,72 +90,76 @@ class App extends React.Component {
               '### 🤔 What is this for?',
               'There are a couple of main use cases:\n',
               '  - Ensuring you only display one `<Modal />` at a time.',
-              '  - Enforcing a sequence of `<Modal />` presentation.',
+              '  - Enforcing a sequence of `<Modal />` presentation, just in the order they attempted to be visible.',
               '  - Working around differences in [React Native Web](https://github.com/necolas/react-native-web/issues/1020)\'s presentation of `<Modal />` content.',
               '  - Providing the ability to adjust the layout of a presented Modal.',
-              '  - Persisting shared properties across `<Modal />`s.',
+              '  - Persisting shared properties across `<Modal />`s to ensure a consistent experience.',
               '### 🙈 What is this not?',
               '  - A `<Modal />`.',
               '### ✍️ Tutorial',
-              'Okay, here\'s how this is going to work:',
-              'Tapping **Menu One** below will open a menu. You can choose to close the menu, or open **Menu Two**. Since both of these are presented using a `<Modal />`, **Menu Two** will not be able to open until **Menu One** has closed. This emphasises that attempts to open `<Modal />`\ are queued.',
+              'Okay, here\'s how this is going to work:\n',
+              'Tapping **Menu One** below will open a menu. You can choose to close the menu, or open **Menu Two**. Since both of these are presented using _the same_ `<Modal />` instance, **Menu Two** will not be able to open until **Menu One** has closed. This emphasises that attempts to open `<Modal />`\ are queued.',
             ].join('\n')}
           </Markdown>
-          <ConnectedMaterialModal
-            visible={showMenuOne}
-            button={
-              ({ ...extraProps }) => {
-                return (
-                  <Text
-                    onPress={() => this.setState({
-                      showMenuOne: true,
-                    })}
-                    children="Menu One"
-                  />
-                );
-              }
-            }
+          <View
+            style={styles.tutorial}
           >
-            <MenuItem
-              onPress={() => this.setState({
-                showMenuTwo: true,
-              })}
+            <ConnectedMaterialModal
+              visible={showMenuOne}
+              button={
+                ({ ...extraProps }) => {
+                  return (
+                    <Text
+                      onPress={() => this.setState({
+                        showMenuOne: true,
+                      })}
+                      children="Menu One"
+                    />
+                  );
+                }
+              }
             >
-              {'Open Menu Two'}
-            </MenuItem>
-            <MenuDivider />
-            <MenuItem
-              children="Close"
-              onPress={() => this.setState({
-                showMenuOne: false,
-              })}
-            />
-          </ConnectedMaterialModal>
-          <ConnectedMaterialModal
-            visible={showMenuTwo}
-            button={
-              ({ layout, ...extraProps }) => {
-                return (
-                  <Text
-                  >
-                    {'Menu Two'}
-                  </Text>
-                );
+              <MenuItem
+                onPress={() => this.setState({
+                  showMenuTwo: true,
+                })}
+              >
+                {'Open Menu Two'}
+              </MenuItem>
+              <MenuDivider />
+              <MenuItem
+                children="Close"
+                onPress={() => this.setState({
+                  showMenuOne: false,
+                })}
+              />
+            </ConnectedMaterialModal>
+            <ConnectedMaterialModal
+              visible={showMenuTwo}
+              button={
+                ({ layout, ...extraProps }) => {
+                  return (
+                    <Text
+                    >
+                      {'Menu Two'}
+                    </Text>
+                  );
+                }
               }
-            }
-          >
-            <MenuItem
-              children="🥳"
-            />
-            <MenuDivider
-            />
-            <MenuItem
-              onPress={() => this.setState({
-                showMenuTwo: false,
-              })}
-              children="Close"
-            />
-          </ConnectedMaterialModal>
+            >
+              <MenuItem
+                children="🥳"
+              />
+              <MenuDivider
+              />
+              <MenuItem
+                onPress={() => this.setState({
+                  showMenuTwo: false,
+                })}
+                children="Close"
+              />
+            </ConnectedMaterialModal>
+          </View>
           <Markdown
           >
             {[

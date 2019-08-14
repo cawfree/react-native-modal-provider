@@ -22,11 +22,23 @@ export const withModal = (
     };
   }
   __onLayout(e) {
-    const { layout } = e.nativeEvent;
-    return this.setState(
-      {
-        layout,
-      },
+    const { container } = this.refs;
+    // XXX: Note that the layout we store is the *absolute* layout.
+    return new Promise(
+      resolve => container
+        .measure(
+          (x, y, width, height, pageX, pageY) => this.setState(
+            {
+              layout: {
+                x: pageX,
+                y: pageY,
+                width,
+                height,
+              },
+            },
+            resolve,
+          ),
+        ),
     );
   }
   async componentWillUpdate(nextProps, nextState) {
@@ -79,6 +91,7 @@ export const withModal = (
     } = this.state;
     return (
       <View
+        ref="container"
         onLayout={this.__onLayout}
       >
         <BaseComponent
