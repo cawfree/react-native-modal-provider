@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
+import Markdown from 'react-native-markdown-renderer';
 import { MenuItem, MenuDivider } from 'react-native-material-menu';
 
 import ModalProvider, { withModal } from './components/ModalProvider';
@@ -14,7 +15,9 @@ const styles = StyleSheet
   .create(
     {
       container: {
-        backgroundColor: 'green',
+      },
+      tutorial: {
+        padding: 50,
       },
     },
   );
@@ -32,15 +35,22 @@ const ConnectedMaterialModal = withModal(
   },
   // What to render in the Modal's place whilst it isn't open.
   // Note that you can do things dynamically.
-  ({ visible, button: ButtonComponent }) => {
+  // Here we perform some steps to aid correct rendering of
+  // the material-menu when opened in the shared absolute layout.
+  ({ layout, visible, button: ButtonComponent }) => {
     if (!visible) {
       return (
         <ButtonComponent
         />
       );
     }
+    const { width, height } = layout;
     return (
-      <React.Fragment
+      <View
+        style={{
+          width,
+          height,
+        }}
       />
     );
   },
@@ -49,10 +59,14 @@ const ConnectedMaterialModal = withModal(
 
 class App extends React.Component {
   state = {
-    visible: true,
+    showMenuOne: false,
+    showMenuTwo: false,
   };
   render() {
-    const { visible } = this.state;
+    const {
+      showMenuOne,
+      showMenuTwo,
+    } = this.state;
     return (
       <ModalProvider
         ModalComponent={MaterialMenuModal}
@@ -66,35 +80,91 @@ class App extends React.Component {
           style={[
             StyleSheet.absoluteFill,
             styles.container,
-            {
-              padding: 250,
-            },
           ]}
         >
+          <Markdown
+          >
+            {[
+              '## Hello!',
+              'Welcome to [**react-native-modal-provider**](https://github.com/cawfree/react-native-modal-provider).',
+              '### 🤔 What is this for?',
+              'There are a couple of main use cases:\n',
+              '  - Ensuring you only display one `<Modal />` at a time.',
+              '  - Enforcing a sequence of `<Modal />` presentation.',
+              '  - Working around differences in [React Native Web](https://github.com/necolas/react-native-web/issues/1020)\'s presentation of `<Modal />` content.',
+              '  - Providing the ability to adjust the layout of a presented Modal.',
+              '  - Persisting shared properties across `<Modal />`s.',
+              '### 🙈 What is this not?',
+              '  - A `<Modal />`.',
+              '### ✍️ Tutorial',
+              'Okay, here\'s how this is going to work:',
+              'Tapping **Menu One** below will open a menu. You can choose to close the menu, or open **Menu Two**. Since both of these are presented using a `<Modal />`, **Menu Two** will not be able to open until **Menu One** has closed. This emphasises that attempts to open `<Modal />`\ are queued.',
+            ].join('\n')}
+          </Markdown>
           <ConnectedMaterialModal
-            visible={visible}
+            visible={showMenuOne}
             button={
-              ({ layout, ...extraProps }) => {
+              ({ ...extraProps }) => {
                 return (
                   <Text
                     onPress={() => this.setState({
-                      visible: true,
+                      showMenuOne: true,
                     })}
-                  >
-                    {'Press Me'}
-                  </Text>
+                    children="Menu One"
+                  />
                 );
               }
             }
           >
             <MenuItem
               onPress={() => this.setState({
-                visible: false,
+                showMenuTwo: true,
               })}
             >
-              {'Welcome 2!'}
+              {'Open Menu Two'}
             </MenuItem>
+            <MenuDivider />
+            <MenuItem
+              children="Close"
+              onPress={() => this.setState({
+                showMenuOne: false,
+              })}
+            />
           </ConnectedMaterialModal>
+          <ConnectedMaterialModal
+            visible={showMenuTwo}
+            button={
+              ({ layout, ...extraProps }) => {
+                return (
+                  <Text
+                  >
+                    {'Menu Two'}
+                  </Text>
+                );
+              }
+            }
+          >
+            <MenuItem
+              children="🥳"
+            />
+            <MenuDivider
+            />
+            <MenuItem
+              onPress={() => this.setState({
+                showMenuTwo: false,
+              })}
+              children="Close"
+            />
+          </ConnectedMaterialModal>
+          <Markdown
+          >
+            {[
+              '### 🍒 Contributing',
+              '[Pull Requests](https://github.com/cawfree/react-native-modal-provider/pulls) are more than welcome. Please feel free to branch directly from `/master` and make your changes there.',
+              '### ✌️ License',
+              '[MIT](https://opensource.org/licenses/MIT)',
+            ].join('\n')}
+          </Markdown>
         </View>
       </ModalProvider>
     );

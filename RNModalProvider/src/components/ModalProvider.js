@@ -29,34 +29,6 @@ export const withModal = (
       },
     );
   }
-  //async componentDidMount() {
-  //  const {
-  //    visible,
-  //    children,
-  //    ...extraProps
-  //  } = this.props;
-  //  if (visible) {
-  //    // TODO: Need to assure this works. (i.e. what if layout is called after mount?)
-  //    const {
-  //      uuid,
-  //      layout,
-  //    } = this.state;
-  //    const { requestOpen } = this.context;
-  //    return requestOpen(
-  //      uuid,
-  //      layout,
-  //      { ...extraProps },
-  //      () => (
-  //        <ModalContent
-  //        >
-  //          {children}
-  //        </ModalContent>
-  //      ),
-  //    );
-  //  }
-  //  return Promise
-  //    .resolve();
-  //}
   async componentWillUpdate(nextProps, nextState) {
     const {
       visible,
@@ -103,15 +75,17 @@ export const withModal = (
     } = this.context;
     const {
       uuid,
+      layout,
     } = this.state;
     return (
       <View
         onLayout={this.__onLayout}
       >
-      <BaseComponent
-        {...extraProps}
-        visible={uuid === contextUuid}
-      />
+        <BaseComponent
+          {...extraProps}
+          visible={uuid === contextUuid}
+          layout={layout}
+        />
       </View>
     );
   }
@@ -141,12 +115,15 @@ class ModalProvider extends React.Component {
             ]
               .filter((e, i, arr) => (arr.indexOf(e) === i)),
             l: {
+              ...this.state.l,
               [uuid]: { ...layout },
             },
             p: {
+              ...this.state.p,
               [uuid]: { ...props },
             },
             c: {
+              ...this.state.c,
               [uuid]: ModalChild,
             },
           },
@@ -155,8 +132,8 @@ class ModalProvider extends React.Component {
       ),
     )
       .then(() => {
-        const { visible } = this.state;
-        if (!visible) {
+        const { q, visible } = this.state;
+        if (!visible && q.length > 0) {
           return new Promise(
             resolve => this.requestAnimationFrame(
               () => this.setState(
@@ -236,7 +213,6 @@ class ModalProvider extends React.Component {
     return (
       <ModalContext.Provider
         value={{
-          ModalComponent,
           requestOpen: this.__requestOpen,
           requestDismiss: this.__requestDismiss,
           uuid,
@@ -245,12 +221,9 @@ class ModalProvider extends React.Component {
         {children}
         {((Platform.OS !== 'web') || visible) && (
           <View
-            style={{
-              ...position(layout), 
-            }}
+            style={position(layout)}
           >
             <ModalComponent
-              testing="hi"
               visible={visible}
               {...modalProps}
             >

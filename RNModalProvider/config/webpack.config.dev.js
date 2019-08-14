@@ -216,6 +216,7 @@ module.exports = {
             include: [
               paths.appSrc,
               path.resolve(paths.appNodeModules, 'react-native-material-menu'),
+              path.resolve(paths.appNodeModules, 'react-native-markdown-renderer'),
             ],
             loader: require.resolve('babel-loader'),
             options: {
