@@ -36,10 +36,10 @@ class App extends React.Component {
     return (
       <ModalProvider
         ModalComponent={MaterialMenuModal}
-        position="relative"
         position={layout => ({
-          marginLeft: layout.x,
-          marginTop: layout.y,
+          position: 'absolute',
+          left: layout.x,
+          top: layout.y,
         })}
       >
         <View
